@@ -1,15 +1,21 @@
 package org.dave.tacocloud.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dave.tacocloud.model.Ingredient;
 import org.dave.tacocloud.model.Taco;
 import org.dave.tacocloud.model.TacoOrder;
+import org.dave.tacocloud.model.User;
 import org.dave.tacocloud.repository.IngredientRepository;
+import org.dave.tacocloud.repository.OrderRepository;
+import org.dave.tacocloud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -24,7 +30,11 @@ import org.springframework.web.bind.support.SessionStatus;
 @Controller
 @RequestMapping("/orders")
 @SessionAttributes("tacoOrder")
+@RequiredArgsConstructor
 public class OrderController {
+
+    private final UserRepository userRepository;
+    private final OrderRepository orderRepo;
 
     @GetMapping("/current")
     public String orderForm(){
@@ -32,11 +42,14 @@ public class OrderController {
     }
 
     @PostMapping
-    public String processOrder(@Valid TacoOrder order, Errors errors, SessionStatus sessionStatus) {
+    public String processOrder(@Valid TacoOrder order, Errors errors, SessionStatus sessionStatus, @AuthenticationPrincipal User user) {
         if (errors.hasErrors()) {
             return "orderForm";
         }
         log.info("Order submitted: {}", order);
+        order.setUser(user);
+
+        orderRepo.save(order);
         sessionStatus.setComplete();
 
         return "redirect:/";
