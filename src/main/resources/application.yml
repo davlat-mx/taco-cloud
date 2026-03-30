@@ -9,6 +9,9 @@ spring:
     generate-unique-name: false
     name: tacocloud
 
+  data:
+    rest:
+      base-path: /data-api
   security:
     oauth2:
       client:
@@ -24,13 +27,13 @@ taco:
   orders:
     pageSize: 10
 
-logging:
-  file:
-    path: /var/logs
-    file: TacoCloud.log
-  level:
-    root: WARN
-    org:
-      springframework:
-        security: DEBUG
+#logging:
+#  file:
+#    path: /var/logs
+#    file: TacoCloud.log
+#  level:
+#    root: WARN
+#    org:
+#      springframework:
+#        security: DEBUG
 
