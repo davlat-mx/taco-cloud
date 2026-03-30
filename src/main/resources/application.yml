@@ -19,3 +19,18 @@ spring:
             scope:
               - email,
               - public_profile
+
+taco:
+  orders:
+    pageSize: 10
+
+logging:
+  file:
+    path: /var/logs
+    file: TacoCloud.log
+  level:
+    root: WARN
+    org:
+      springframework:
+        security: DEBUG
+

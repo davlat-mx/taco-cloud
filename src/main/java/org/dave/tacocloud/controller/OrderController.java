@@ -1,6 +1,8 @@
 package org.dave.tacocloud.controller;
 
-import java.security.Principal;
+import org.dave.tacocloud.config.OrderProps;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import org.dave.tacocloud.repository.IngredientRepository;
 import org.dave.tacocloud.repository.OrderRepository;
 import org.dave.tacocloud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,8 +36,10 @@ import org.springframework.web.bind.support.SessionStatus;
 @RequiredArgsConstructor
 public class OrderController {
 
+    private final OrderProps orderProps;
     private final UserRepository userRepository;
     private final OrderRepository orderRepo;
+
 
     @GetMapping("/current")
     public String orderForm(){
@@ -53,6 +58,15 @@ public class OrderController {
         sessionStatus.setComplete();
 
         return "redirect:/";
+    }
+
+    @GetMapping
+    public String ordersForUser(@AuthenticationPrincipal User user, Model model) {
+
+        Pageable pageable = PageRequest.of(0, orderProps.getPageSize());
+        model.addAttribute("orders",
+            orderRepo.findByUserOrderByPlacedAtDesc(user, pageable));
+        return "orderList";
     }
 
     @Slf4j

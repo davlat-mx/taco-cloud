@@ -1,13 +1,15 @@
 package org.dave.tacocloud.repository;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
-import java.util.Date;
 import org.dave.tacocloud.model.TacoOrder;
-import org.springframework.data.jpa.repository.Query;
+import org.dave.tacocloud.model.User;
 import org.springframework.data.repository.CrudRepository;
 
 public interface OrderRepository extends CrudRepository<TacoOrder, Long> {
+
+    List<TacoOrder> findByUserOrderByPlacedAtDesc(User user, Pageable pageable);
 //    TacoOrder save(TacoOrder order);
 //    List<TacoOrder> findByDeliveryZip(String deliveryZip);
 //
